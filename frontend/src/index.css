@@ -1,32 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  --accent-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
   --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --danger-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
   --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 
-  --primary-color: #6366f1;
-  --primary-hover: #4f46e5;
-  --bg-color: #0b0f19;
-  --bg-surface: #151b2d;
-  --bg-surface-hover: #1e263f;
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --bg-color: #080b11;
+  --bg-surface: #0e131f;
+  --bg-surface-hover: #151d30;
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: rgba(255, 255, 255, 0.06);
-  --glass-bg: rgba(21, 27, 45, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-muted: #64748b;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(14, 19, 31, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.06);
   
   --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
 
-  --border-radius: 16px;
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --shadow-sm: 0 2px 8px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 12px 20px -8px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --border-radius: 12px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -42,8 +42,8 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.08) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.06) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.06) 0px, transparent 50%);
   background-attachment: fixed;
 }
 

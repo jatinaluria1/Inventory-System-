@@ -14,7 +14,7 @@ function App() {
           <div style={{ padding: '0 0.5rem', marginBottom: '2.5rem' }}>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary-color)', fontSize: '1.6rem', fontWeight: 800 }}>
               <Package size={26} style={{ strokeWidth: 2.5 }} />
-              <span style={{ background: 'linear-gradient(to right, #6366f1, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(to right, #3b82f6, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Inventory
               </span>
             </h2>
