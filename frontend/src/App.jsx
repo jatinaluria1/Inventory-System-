@@ -11,13 +11,44 @@ function App() {
     <Router>
       <div className="app-container">
         <aside className="sidebar">
-          <div style={{ padding: '0 0.5rem', marginBottom: '2.5rem' }}>
-            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary-color)', fontSize: '1.6rem', fontWeight: 800 }}>
-              <Package size={26} style={{ strokeWidth: 2.5 }} />
-              <span style={{ background: 'linear-gradient(to right, #3b82f6, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Inventory
+          <div className="brand-logo-container" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '2.5rem', padding: '0 0.5rem' }}>
+            <div className="logo-icon-wrapper" style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '42px',
+              height: '42px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.15)',
+              color: '#6366f1'
+            }}>
+              <Package size={22} style={{ strokeWidth: 2.2 }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{
+                fontSize: '1.35rem',
+                fontWeight: 800,
+                letterSpacing: '-0.5px',
+                lineHeight: '1.1',
+                background: 'linear-gradient(to right, #ffffff, #c7d2fe)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                INVEN<span style={{ background: 'linear-gradient(to right, #3b82f6, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>TORY</span>
               </span>
-            </h2>
+              <span style={{
+                fontSize: '0.62rem',
+                fontWeight: 600,
+                letterSpacing: '2px',
+                textTransform: 'uppercase',
+                color: 'rgba(255, 255, 255, 0.4)',
+                marginTop: '2px'
+              }}>
+                Management
+              </span>
+            </div>
           </div>
           
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
