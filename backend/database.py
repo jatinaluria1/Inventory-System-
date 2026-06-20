@@ -4,6 +4,9 @@ from sqlalchemy.orm import declarative_base
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql+asyncpg://inventory_user:inventory_password@localhost:5432/inventory_db")
 
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 engine = create_async_engine(DATABASE_URL, echo=True)
 
 AsyncSessionLocal = async_sessionmaker(
