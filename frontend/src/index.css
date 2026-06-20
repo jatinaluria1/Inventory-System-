@@ -423,3 +423,66 @@ tr:hover td {
   to { transform: translateX(0) translateY(0); opacity: 1; }
 }
 
+/* Responsive Styles for Tablet & Mobile */
+@media (max-width: 992px) {
+  .main-content {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem 1.25rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  
+  .sidebar div {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .sidebar nav {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem !important;
+    width: 100%;
+  }
+  
+  .sidebar nav .btn {
+    padding: 0.5rem 0.85rem !important;
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 110px;
+    justify-content: center !important;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1.5rem 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 1rem;
+  }
+
+  .toast-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
+  }
+}
+
+
