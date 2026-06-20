@@ -4,8 +4,8 @@ from sqlalchemy.future import select
 from typing import List
 import sqlalchemy.exc
 
-from ..database import get_db
-from .. import models, schemas
+from database import get_db
+import models, schemas
 
 router = APIRouter(prefix="/products", tags=["products"])
 

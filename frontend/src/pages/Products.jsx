@@ -9,6 +9,13 @@ const Products = () => {
   const [formData, setFormData] = useState({ name: '', sku: '', price: '', quantity_in_stock: '' });
   const [editId, setEditId] = useState(null);
 
+  const [toast, setToast] = useState(null);
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -18,7 +25,7 @@ const Products = () => {
       const res = await api.get('/products');
       setProducts(res.data);
     } catch (error) {
-      console.error("Failed to fetch products", error);
+      showToast('error', "Failed to fetch products");
     } finally {
       setLoading(false);
     }
@@ -39,15 +46,17 @@ const Products = () => {
 
       if (editId) {
         await api.put(`/products/${editId}`, data);
+        showToast('success', "Product updated successfully!");
       } else {
         await api.post('/products', data);
+        showToast('success', "Product created successfully!");
       }
       setShowModal(false);
       fetchProducts();
       setFormData({ name: '', sku: '', price: '', quantity_in_stock: '' });
       setEditId(null);
     } catch (error) {
-      alert(error.response?.data?.detail || "An error occurred");
+      showToast('error', error.response?.data?.detail || "An error occurred");
     }
   };
 
@@ -56,8 +65,9 @@ const Products = () => {
       try {
         await api.delete(`/products/${id}`);
         fetchProducts();
+        showToast('success', "Product deleted successfully");
       } catch (error) {
-        console.error("Failed to delete product", error);
+        showToast('error', "Failed to delete product");
       }
     }
   };
@@ -135,34 +145,38 @@ const Products = () => {
       </div>
 
       {showModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div className="card" style={{ width: '400px', backgroundColor: 'var(--bg-color)' }}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h2>{editId ? 'Edit Product' : 'Add Product'}</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label className="form-label">Name</label>
-                <input required className="form-input" name="name" value={formData.name} onChange={handleInputChange} />
+                <input required className="form-input" name="name" value={formData.name} onChange={handleInputChange} placeholder="Wireless Mouse" />
               </div>
               <div className="form-group">
                 <label className="form-label">SKU</label>
-                <input required className="form-input" name="sku" value={formData.sku} onChange={handleInputChange} />
+                <input required className="form-input" name="sku" value={formData.sku} onChange={handleInputChange} placeholder="MS-WR-01" />
               </div>
               <div className="form-group">
-                <label className="form-label">Price</label>
-                <input required type="number" step="0.01" min="0.01" className="form-input" name="price" value={formData.price} onChange={handleInputChange} />
+                <label className="form-label">Price ($)</label>
+                <input required type="number" step="0.01" min="0.01" className="form-input" name="price" value={formData.price} onChange={handleInputChange} placeholder="29.99" />
               </div>
               <div className="form-group">
-                <label className="form-label">Quantity</label>
-                <input required type="number" min="0" className="form-input" name="quantity_in_stock" value={formData.quantity_in_stock} onChange={handleInputChange} />
+                <label className="form-label">Quantity in Stock</label>
+                <input required type="number" min="0" className="form-input" name="quantity_in_stock" value={formData.quantity_in_stock} onChange={handleInputChange} placeholder="100" />
               </div>
               <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save Product</button>
                 <button type="button" className="btn" style={{ flex: 1 }} onClick={() => setShowModal(false)}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div className="toast-container">
+          <div className={`toast toast-${toast.type}`}>
+            <span>{toast.message}</span>
           </div>
         </div>
       )}

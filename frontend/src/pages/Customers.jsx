@@ -8,6 +8,13 @@ const Customers = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({ full_name: '', email: '', phone_number: '' });
 
+  const [toast, setToast] = useState(null);
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   useEffect(() => {
     fetchCustomers();
   }, []);
@@ -17,7 +24,7 @@ const Customers = () => {
       const res = await api.get('/customers');
       setCustomers(res.data);
     } catch (error) {
-      console.error("Failed to fetch customers", error);
+      showToast('error', "Failed to fetch customers");
     } finally {
       setLoading(false);
     }
@@ -34,8 +41,9 @@ const Customers = () => {
       setShowModal(false);
       fetchCustomers();
       setFormData({ full_name: '', email: '', phone_number: '' });
+      showToast('success', "Customer added successfully!");
     } catch (error) {
-      alert(error.response?.data?.detail || "An error occurred");
+      showToast('error', error.response?.data?.detail || "An error occurred");
     }
   };
 
@@ -44,8 +52,9 @@ const Customers = () => {
       try {
         await api.delete(`/customers/${id}`);
         fetchCustomers();
+        showToast('success', "Customer deleted successfully");
       } catch (error) {
-        console.error("Failed to delete customer", error);
+        showToast('error', "Failed to delete customer");
       }
     }
   };
@@ -102,30 +111,34 @@ const Customers = () => {
       </div>
 
       {showModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div className="card" style={{ width: '400px', backgroundColor: 'var(--bg-color)' }}>
+        <div className="modal-overlay">
+          <div className="modal-content">
             <h2>Add Customer</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label className="form-label">Full Name</label>
-                <input required className="form-input" name="full_name" value={formData.full_name} onChange={handleInputChange} />
+                <input required className="form-input" name="full_name" value={formData.full_name} onChange={handleInputChange} placeholder="John Doe" />
               </div>
               <div className="form-group">
                 <label className="form-label">Email</label>
-                <input required type="email" className="form-input" name="email" value={formData.email} onChange={handleInputChange} />
+                <input required type="email" className="form-input" name="email" value={formData.email} onChange={handleInputChange} placeholder="john@example.com" />
               </div>
               <div className="form-group">
                 <label className="form-label">Phone Number</label>
-                <input required className="form-input" name="phone_number" value={formData.phone_number} onChange={handleInputChange} />
+                <input required className="form-input" name="phone_number" value={formData.phone_number} onChange={handleInputChange} placeholder="+1 (555) 000-0000" />
               </div>
               <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save Customer</button>
                 <button type="button" className="btn" style={{ flex: 1 }} onClick={() => setShowModal(false)}>Cancel</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div className="toast-container">
+          <div className={`toast toast-${toast.type}`}>
+            <span>{toast.message}</span>
           </div>
         </div>
       )}

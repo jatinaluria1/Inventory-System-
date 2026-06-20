@@ -4,8 +4,8 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from typing import List
 
-from ..database import get_db
-from .. import models, schemas
+from database import get_db
+import models, schemas
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
@@ -94,12 +94,21 @@ async def read_order(order_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_order(order_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(models.Order).filter(models.Order.id == order_id))
+    result = await db.execute(
+        select(models.Order)
+        .options(selectinload(models.Order.items))
+        .filter(models.Order.id == order_id)
+    )
     order = result.scalar_one_or_none()
     if order is None:
         raise HTTPException(status_code=404, detail="Order not found")
     
-    # We could optionally restore inventory here if the order is cancelled
-    # For now, just delete the order (items cascade delete)
+    # Restore inventory stock when order is cancelled
+    for item in order.items:
+        prod_res = await db.execute(select(models.Product).filter(models.Product.id == item.product_id))
+        product = prod_res.scalar_one_or_none()
+        if product:
+            product.quantity_in_stock += item.quantity
+            
     await db.delete(order)
     await db.commit()

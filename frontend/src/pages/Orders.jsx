@@ -17,6 +17,13 @@ const Orders = () => {
     items: [{ product_id: '', quantity: 1 }]
   });
 
+  const [toast, setToast] = useState(null);
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -32,7 +39,7 @@ const Orders = () => {
       setCustomers(customersRes.data);
       setProducts(productsRes.data);
     } catch (error) {
-      console.error("Failed to fetch data", error);
+      showToast('error', "Failed to load order data");
     } finally {
       setLoading(false);
     }
@@ -52,8 +59,9 @@ const Orders = () => {
       setShowCreateModal(false);
       fetchData(); // Refresh all data to get updated stock
       setFormData({ customer_id: '', items: [{ product_id: '', quantity: 1 }] });
+      showToast('success', "Order placed successfully!");
     } catch (error) {
-      alert(error.response?.data?.detail || "An error occurred while creating order");
+      showToast('error', error.response?.data?.detail || "An error occurred while creating order");
     }
   };
 
@@ -80,8 +88,9 @@ const Orders = () => {
       try {
         await api.delete(`/orders/${id}`);
         fetchData();
+        showToast('success', "Order cancelled and inventory restored!");
       } catch (error) {
-        console.error("Failed to delete order", error);
+        showToast('error', "Failed to cancel order");
       }
     }
   };
@@ -151,15 +160,12 @@ const Orders = () => {
       </div>
 
       {showCreateModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div className="card" style={{ width: '500px', backgroundColor: 'var(--bg-color)', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h2>Create Order</h2>
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '600px' }}>
+            <h2>Create New Order</h2>
             <form onSubmit={handleCreateSubmit}>
               <div className="form-group">
-                <label className="form-label">Customer</label>
+                <label className="form-label">Select Customer</label>
                 <select 
                   required 
                   className="form-select" 
@@ -172,46 +178,52 @@ const Orders = () => {
                 </select>
               </div>
               
-              <div style={{ marginBottom: '1rem' }}>
-                <label className="form-label">Products</label>
-                {formData.items.map((item, index) => (
-                  <div key={index} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <select 
-                      required 
-                      className="form-select" 
-                      value={item.product_id} 
-                      onChange={(e) => handleItemChange(index, 'product_id', e.target.value)}
-                      style={{ flex: 2 }}
-                    >
-                      <option value="" disabled>Select product</option>
-                      {products.map(p => (
-                         <option key={p.id} value={p.id} disabled={p.quantity_in_stock === 0}>
-                           {p.name} (${p.price}) - {p.quantity_in_stock} in stock
-                         </option>
-                      ))}
-                    </select>
-                    <input 
-                      required 
-                      type="number" 
-                      min="1" 
-                      className="form-input" 
-                      value={item.quantity} 
-                      onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                      style={{ flex: 1 }}
-                    />
-                    {formData.items.length > 1 && (
-                      <button type="button" className="btn btn-danger" style={{ padding: '0.5rem' }} onClick={() => removeItemRow(index)}>
-                        <Trash2 size={16} />
-                      </button>
-                    )}
-                  </div>
-                ))}
-                <button type="button" className="btn" onClick={addItemRow} style={{ marginTop: '0.5rem', width: '100%' }}>
-                  <Plus size={16} /> Add Another Product
-                </button>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>Order Items</span>
+                  <button type="button" className="btn btn-primary" onClick={addItemRow} style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}>
+                    <Plus size={14} /> Add Item
+                  </button>
+                </label>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+                  {formData.items.map((item, index) => (
+                    <div key={index} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <select 
+                        required 
+                        className="form-select" 
+                        value={item.product_id} 
+                        onChange={(e) => handleItemChange(index, 'product_id', e.target.value)}
+                        style={{ flex: 3 }}
+                      >
+                        <option value="" disabled>Select product</option>
+                        {products.map(p => (
+                           <option key={p.id} value={p.id} disabled={p.quantity_in_stock === 0}>
+                             {p.name} (${p.price.toFixed(2)}) - {p.quantity_in_stock} in stock
+                           </option>
+                        ))}
+                      </select>
+                      <input 
+                        required 
+                        type="number" 
+                        min="1" 
+                        className="form-input" 
+                        placeholder="Qty"
+                        value={item.quantity} 
+                        onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                        style={{ flex: 1, minWidth: '70px' }}
+                      />
+                      {formData.items.length > 1 && (
+                        <button type="button" className="btn btn-danger" style={{ padding: '0.6rem' }} onClick={() => removeItemRow(index)}>
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+ 
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '2.5rem' }}>
                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Submit Order</button>
                 <button type="button" className="btn" style={{ flex: 1 }} onClick={() => setShowCreateModal(false)}>Cancel</button>
               </div>
@@ -219,22 +231,23 @@ const Orders = () => {
           </div>
         </div>
       )}
-
+ 
       {showViewModal && selectedOrder && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div className="card" style={{ width: '500px', backgroundColor: 'var(--bg-color)' }}>
-            <h2>Order #{selectedOrder.id} Details</h2>
-            <div style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
-              <p>Date: {new Date(selectedOrder.created_at).toLocaleString()}</p>
-              <p>Customer ID: {selectedOrder.customer_id}</p>
-              <p style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-main)', marginTop: '0.5rem' }}>
-                Total: ${selectedOrder.total_amount.toFixed(2)}
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '550px' }}>
+            <h2>Order Details</h2>
+            <div style={{ marginBottom: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+              <p style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span>Order Reference:</span> <strong style={{ color: 'white' }}>#{selectedOrder.id}</strong>
+              </p>
+              <p style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span>Date Placed:</span> <strong style={{ color: 'white' }}>{new Date(selectedOrder.created_at).toLocaleString()}</strong>
+              </p>
+              <p style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Customer Reference:</span> <strong style={{ color: 'white' }}>ID #{selectedOrder.customer_id}</strong>
               </p>
             </div>
-
+ 
             <div className="table-container" style={{ marginBottom: '1.5rem' }}>
               <table>
                 <thead>
@@ -248,7 +261,7 @@ const Orders = () => {
                 <tbody>
                   {selectedOrder.items.map(item => (
                     <tr key={item.id}>
-                      <td>{item.product_id}</td>
+                      <td>#{item.product_id}</td>
                       <td>${item.price.toFixed(2)}</td>
                       <td>{item.quantity}</td>
                       <td>${(item.price * item.quantity).toFixed(2)}</td>
@@ -257,10 +270,24 @@ const Orders = () => {
                 </tbody>
               </table>
             </div>
-
+ 
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', padding: '0 0.5rem' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-muted)' }}>Total Amount</span>
+              <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
+                ${selectedOrder.total_amount.toFixed(2)}
+              </span>
+            </div>
+ 
             <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => setShowViewModal(false)}>
-              Close
+              Close Details
             </button>
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div className="toast-container">
+          <div className={`toast toast-${toast.type}`}>
+            <span>{toast.message}</span>
           </div>
         </div>
       )}

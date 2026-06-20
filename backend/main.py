@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import contextlib
 
-from .database import engine, Base
-from .routers import products, customers, orders
+from database import engine, Base
+from routers import products, customers, orders
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
